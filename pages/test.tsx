@@ -50,6 +50,10 @@ export default function Test() {
             </StyledInputContainer>
             <StyledDescription>
               <p>firstName is: </p>
+              <h3>형식</h3>
+              <p>firstName: 필수값, 영문, 최대 길이 15</p>
+              <p>email: 필수값, 이메일 형식</p>
+              <p>age: 3~15 사이</p>
             </StyledDescription>
           </StyledIndex>
           <StyledButtonContainer>
