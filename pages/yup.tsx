@@ -1,19 +1,14 @@
 import styles from "../styles/Home.module.css";
 import styled from "@emotion/styled";
 import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
 import Input from "../components/Input";
 import RegexUtil from "../utils/regex";
-import {
-  EMPTY_ERROR,
-  FORMAT_ERROR,
-  MAX_ERROR,
-  MAX_LENGTH_ERROR,
-  MIN_ERROR,
-} from "../constants/message";
+import { FORMAT_ERROR, MAX_LENGTH_ERROR } from "../constants/message";
 import { StyledPrimaryButton, StyledWarningButton } from "../styles/common";
 import { AGE, EMAIL, FIRST_NAME } from "../constants/common";
-import { emailRule } from "../utils/rule";
 
 interface FormData {
   age: number;
@@ -23,12 +18,26 @@ interface FormData {
   profile?: File;
 }
 
-export default function Home() {
+export default function Yup() {
   const defaultValues: FormData = {
     age: 0,
     email: "",
     firstName: "",
   };
+
+  const schema = yup.object().shape({
+    firstName: yup
+      .string()
+      .matches(RegexUtil.REG_NAME, FORMAT_ERROR)
+      .max(15, MAX_LENGTH_ERROR)
+      .required("firstname is required."),
+    email: yup
+      .string()
+      .max(5, "5 length exceed")
+      .email("not a pattern")
+      .required("email is required"),
+    age: yup.number().max(5, "too much"),
+  });
 
   const {
     control,
@@ -39,6 +48,7 @@ export default function Home() {
     getValues,
     setValue,
   } = useForm({
+    resolver: yupResolver(schema),
     defaultValues,
     mode: "onChange",
   });
@@ -91,11 +101,6 @@ export default function Home() {
                     errorMessage={formState.errors?.[FIRST_NAME]?.message}
                   />
                 )}
-                rules={{
-                  required: { value: true, message: EMPTY_ERROR },
-                  pattern: { value: RegexUtil.REG_NAME, message: FORMAT_ERROR },
-                  maxLength: { value: 15, message: MAX_LENGTH_ERROR },
-                }}
                 name={FIRST_NAME}
               />
               <Controller
@@ -108,10 +113,6 @@ export default function Home() {
                     errorMessage={formState.errors?.[EMAIL]?.message}
                   />
                 )}
-                rules={{
-                  ...emailRule,
-                  maxLength: { value: 15, message: "max exceed" },
-                }}
                 name={EMAIL}
               />
               <Controller
@@ -127,10 +128,6 @@ export default function Home() {
                     errorMessage={errors?.[AGE]?.message}
                   />
                 )}
-                rules={{
-                  min: { value: 3, message: MIN_ERROR },
-                  max: { value: 15, message: MAX_ERROR },
-                }}
                 name={AGE}
               />
             </StyledInputContainer>

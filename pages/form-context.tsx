@@ -1,4 +1,5 @@
 import { FormProvider, useForm } from "react-hook-form";
+import { DevTool } from "@hookform/devtools";
 import Red from "../components/form-context/Red";
 import Green from "../components/form-context/Green";
 import { StyledPrimaryButton } from "../styles/common";
@@ -27,13 +28,16 @@ function FormContext() {
   };
 
   return (
-    <FormProvider {...methods}>
-      <Red />
-      <Green />
-      <StyledPrimaryButton type={"button"} onClick={handleSubmit(onSubmit)}>
-        Submit
-      </StyledPrimaryButton>
-    </FormProvider>
+    <>
+      <FormProvider {...methods}>
+        <Red />
+        <Green />
+        <StyledPrimaryButton type={"button"} onClick={handleSubmit(onSubmit)}>
+          Submit
+        </StyledPrimaryButton>
+      </FormProvider>
+      <DevTool control={methods.control} />
+    </>
   );
 }
 
